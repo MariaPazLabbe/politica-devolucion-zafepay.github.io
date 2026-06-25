@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devoluciones y Reembolsos · Zafepay</title>
+  <style>
+    :root {
+      --brand:       #4F46E5;
+      --brand-light: #EEF2FF;
+      --brand-dark:  #3730A3;
+      --success:     #10B981;
+      --success-bg:  #ECFDF5;
+      --warning:     #F59E0B;
+      --warning-bg:  #FFFBEB;
+      --danger:      #EF4444;
+      --danger-bg:   #FEF2F2;
+      --neutral:     #6B7280;
+      --neutral-bg:  #F9FAFB;
+      --border:      #E5E7EB;
+      --text:        #111827;
+      --text-soft:   #4B5563;
+      --radius:      14px;
+      --shadow:      0 1px 3px rgba(0,0,0,.07), 0 6px 20px rgba(0,0,0,.05);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+      background: #F3F4F6;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, var(--brand-dark) 0%, #6366F1 100%);
+      color: #fff;
+      padding: 60px 24px 52px;
+      text-align: center;
+    }
+    .header .eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; opacity: .75; margin-bottom: 14px;
+    }
+    .header h1 { font-size: clamp(24px, 4vw, 38px); font-weight: 800; margin-bottom: 12px; }
+    .header p  { font-size: 16px; opacity: .85; max-width: 580px; margin: 0 auto 28px; }
+    .header-pills { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .header-pill {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+      border-radius: 99px; padding: 4px 13px; font-size: 12px; font-weight: 500;
+    }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 1020px; margin: 0 auto; padding: 40px 20px 72px; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 13px; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; color: var(--neutral);
+      margin: 40px 0 16px;
+    }
+
+    /* ── INTRO NOTICE ── */
+    .intro-notice {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 32px; border-left: 4px solid var(--brand);
+    }
+    .intro-notice-icon { font-size: 20px; flex-shrink: 0; }
+    .intro-notice p { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+    .intro-notice strong { color: var(--text); }
+
+    /* ── SUMMARY TABLE ── */
+    .table-wrap {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow-x: auto; margin-bottom: 32px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 640px; }
+    thead th {
+      background: var(--neutral-bg); padding: 11px 14px;
+      text-align: left; font-size: 11px; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--neutral); border-bottom: 1px solid var(--border);
+    }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #FAFAFA; }
+
+    /* provider group rows */
+    .group-row td { background: #FAFAFA; padding: 8px 14px; }
+    .group-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--neutral);
+    }
+
+    .provider-name { font-weight: 700; }
+    .product-name  { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 99px; padding: 2px 10px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .chip.yes  { background: var(--success-bg); color: #065F46; }
+    .chip.no   { background: var(--danger-bg);  color: #991B1B; }
+    .chip.na   { background: var(--neutral-bg); color: var(--neutral); }
+    .chip.info { background: var(--brand-light); color: var(--brand-dark); }
+    .chip.warn { background: var(--warning-bg); color: #92400E; }
+
+    /* ── PROVIDER SECTIONS ── */
+    .provider-section { margin-bottom: 36px; }
+    .provider-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px;
+    }
+    .provider-logo {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .provider-header h2 { font-size: 18px; font-weight: 800; }
+    .provider-header span { font-size: 13px; color: var(--neutral); display: block; margin-top: 2px; }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .card-title { font-size: 15px; font-weight: 700; }
+    .card-sub   { font-size: 12px; color: var(--neutral); margin-top: 2px; }
+    .card-tag {
+      font-size: 11px; font-weight: 600; padding: 2px 9px;
+      border-radius: 99px; white-space: nowrap; flex-shrink: 0;
+    }
+    .card-tag.online    { background: var(--brand-light); color: var(--brand-dark); }
+    .card-tag.recurrent { background: #F3E8FF; color: #6B21A8; }
+    .card-tag.transfer  { background: #ECFDF5; color: #065F46; }
+
+    .card-body  { padding: 16px 20px; }
+    .ops { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .note-list { list-style: none; }
+    .note-list li {
+      font-size: 13px; color: var(--text-soft); padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex; gap: 8px; align-items: flex-start; line-height: 1.5;
+    }
+    .note-list li:last-child { border-bottom: none; }
+    .note-list li::before { content: "→"; color: var(--brand); flex-shrink: 0; margin-top: 1px; }
+    .note-list li.warn-item::before { content: "⚠"; color: var(--warning); }
+    .note-list strong { color: var(--text); }
+
+    /* ── FLOW TABLE ── */
+    .flow-wrap {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; margin-bottom: 32px;
+    }
+    .flow-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border); font-size: 14px;
+    }
+    .flow-row:last-child { border-bottom: none; }
+    .flow-row.header-row {
+      background: var(--neutral-bg); font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em; color: var(--neutral);
+    }
+    .flow-cell { padding: 13px 18px; }
+    .flow-row:not(.header-row):hover { background: #FAFAFA; }
+
+    /* ── STATES ── */
+    .states-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px; margin-bottom: 32px;
+    }
+    .state-card {
+      background: #fff; border-radius: 10px;
+      padding: 14px 16px; box-shadow: var(--shadow);
+      border-left: 4px solid var(--border); font-size: 13px;
+    }
+    .state-card.s-anular    { border-color: #34D399; }
+    .state-card.s-devolver  { border-color: var(--brand); }
+    .state-card.s-process   { border-color: var(--warning); }
+    .state-card.s-partial   { border-color: #60A5FA; }
+    .state-card.s-done      { border-color: var(--success); }
+    .state-card.s-rejected  { border-color: var(--danger); }
+    .state-card.s-charge    { border-color: #A855F7; }
+    .state-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      display: inline-block; margin-right: 7px;
+    }
+    .state-card .label { font-weight: 700; display: flex; align-items: center; margin-bottom: 4px; }
+    .state-card .desc  { color: var(--text-soft); line-height: 1.4; }
+    .state-card.s-anular   .state-dot { background: #34D399; }
+    .state-card.s-devolver .state-dot { background: var(--brand); }
+    .state-card.s-process  .state-dot { background: var(--warning); }
+    .state-card.s-partial  .state-dot { background: #60A5FA; }
+    .state-card.s-done     .state-dot { background: var(--success); }
+    .state-card.s-rejected .state-dot { background: var(--danger); }
+    .state-card.s-charge   .state-dot { background: #A855F7; }
+
+    /* ── FAQ ── */
+    .faq { display: grid; gap: 12px; margin-bottom: 32px; }
+    .faq-item {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 18px 22px;
+    }
+    .faq-q { font-weight: 700; margin-bottom: 6px; font-size: 15px; }
+    .faq-a { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+
+    /* ── SOURCES FOOTER ── */
+    .sources {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 18px 22px;
+      margin-bottom: 32px;
+    }
+    .sources h4 { font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--neutral); margin-bottom: 10px; }
+    .sources ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+    .sources li a {
+      font-size: 12px; color: var(--brand);
+      text-decoration: none; border: 1px solid #C7D2FE;
+      border-radius: 99px; padding: 3px 12px; background: var(--brand-light);
+      display: inline-block;
+    }
+    .sources li a:hover { background: #C7D2FE; }
+
+    /* ── HELP BANNER ── */
+    .help-banner {
+      background: linear-gradient(135deg, var(--brand-dark), #6366F1);
+      border-radius: var(--radius); padding: 28px 30px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap; margin-top: 8px;
+    }
+    .help-banner-text h3 { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .help-banner-text p  { color: rgba(255,255,255,.8); font-size: 14px; }
+    .help-btn {
+      background: #fff; color: var(--brand-dark);
+      border: none; border-radius: 8px;
+      padding: 11px 22px; font-size: 14px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-block;
+    }
+
+    @media (max-width: 640px) {
+      .products-grid { grid-template-columns: 1fr; }
+      .states-grid   { grid-template-columns: 1fr 1fr; }
+      .flow-row      { grid-template-columns: 1fr; }
+      .flow-row.header-row .flow-cell:last-child { display: none; }
+      .help-banner   { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">Centro de ayuda · Zafepay</div>
+  <h1>Devoluciones y Reembolsos</h1>
+  <p>Información verificada desde los sitios oficiales de cada proveedor. Conoce cómo funcionan las devoluciones según el medio de pago que utiliza tu comercio.</p>
+  <div class="header-pills">
+    <span class="header-pill">Transbank Webpay</span>
+    <span class="header-pill">Transbank Oneclick</span>
+    <span class="header-pill">Fintoc Transferencias</span>
+    <span class="header-pill">Fintoc PACs</span>
+    <span class="header-pill">Getnet Checkout</span>
+    <span class="header-pill">Getnet Click</span>
+    <span class="header-pill">Klap</span>
+    <span class="header-pill">Kushki</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="intro-notice">
+    <div class="intro-notice-icon">💡</div>
+    <p><strong>¿Cómo funcionan las devoluciones en Zafepay?</strong><br>
+    Zafepay te permite gestionar devoluciones directamente desde la plataforma. Sin embargo, el tiempo en que el dinero se refleja en la cuenta de tu cliente depende del proveedor de pago, el producto que utilizas, y el banco emisor de la tarjeta o medio de pago.</p>
+  </div>
+
+  <!-- ══ RESUMEN GENERAL ══ -->
+  <div class="section-title">Resumen por producto</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Proveedor / Producto</th>
+          <th>Anulación mismo día</th>
+          <th>Devolución posterior</th>
+          <th>Parcial</th>
+          <th>Plazo máx. para solicitar</th>
+          <th>Tiempo estimado al cliente</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- TRANSBANK -->
+        <tr class="group-row"><td colspan="6"><span class="group-label">Transbank</span></td></tr>
+        <tr>
+          <td>
+            <div class="provider-name">Webpay Plus</div>
+            <div class="product-name">Pago único online con tarjeta</div>
+          </td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>90 días desde la venta</td>
+          <td>≥ 72 h hábiles + banco emisor</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="provider-name">Oneclick Mall</div>
+            <div class="product-name">Pago con tarjeta guardada (1 click)</div>
+          </td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>90 días desde la venta</td>
+          <td>≥ 72 h hábiles + banco emisor</td>
+        </tr>
+        <!-- FINTOC -->
+        <tr class="group-row"><td colspan="6"><span class="group-label">Fintoc</span></td></tr>
+        <tr>
+          <td>
+            <div class="provider-name">Transferencias</div>
+            <div class="product-name">Smart Checkout / pago por transferencia bancaria</div>
+          </td>
+          <td><span class="chip na">— N/A</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>Hasta 1 año desde el pago</td>
+          <td>1–2 días hábiles según hora de solicitud</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="provider-name">PACs</div>
+            <div class="product-name">Débito directo / pagos recurrentes desde cuenta</div>
+          </td>
+          <td><span class="chip na">— N/A</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>Hasta 1 año desde el pago</td>
+          <td>1–2 días hábiles según hora de solicitud</td>
+        </tr>
+        <!-- GETNET -->
+        <tr class="group-row"><td colspan="6"><span class="group-label">Getnet</span></td></tr>
+        <tr>
+          <td>
+            <div class="provider-name">Web Checkout</div>
+            <div class="product-name">Pago único online con tarjeta</div>
+          </td>
+          <td><span class="chip yes">✓ Sí (antes del cierre)</span></td>
+          <td><span class="chip yes">✓ Sí (después del cierre)</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>No especificado</td>
+          <td>Depende del banco emisor</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="provider-name">Getnet Click</div>
+            <div class="product-name">Pagos recurrentes con tarjeta guardada</div>
+          </td>
+          <td><span class="chip yes">✓ Sí (antes del cierre)</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>No especificado</td>
+          <td>Depende del banco emisor</td>
+        </tr>
+        <!-- KLAP -->
+        <tr class="group-row"><td colspan="6"><span class="group-label">Klap</span></td></tr>
+        <tr>
+          <td>
+            <div class="provider-name">Klap</div>
+            <div class="product-name">Tarjetas, billeteras y otros medios</div>
+          </td>
+          <td><span class="chip yes">✓ Sí (en línea)</span></td>
+          <td><span class="chip yes">✓ Sí (administrativa)</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>No especificado</td>
+          <td>Depende del banco emisor</td>
+        </tr>
+        <!-- KUSHKI -->
+        <tr class="group-row"><td colspan="6"><span class="group-label">Kushki</span></td></tr>
+        <tr>
+          <td>
+            <div class="provider-name">Kushki (tarjetas)</div>
+            <div class="product-name">Crédito y débito</div>
+          </td>
+          <td><span class="chip yes">✓ Void (≤ 3h o mismo día)</span></td>
+          <td><span class="chip yes">✓ Refund</span></td>
+          <td><span class="chip yes">✓ Sí</span></td>
+          <td>No especificado</td>
+          <td>7 d.h. procesamiento + hasta 20 d.h. en extracto</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="provider-name">Kushki (transferencias / efectivo)</div>
+            <div class="product-name">Otros medios de pago</div>
+          </td>
+          <td><span class="chip no">✗ No</span></td>
+          <td><span class="chip warn">Manual</span></td>
+          <td><span class="chip warn">Manual</span></td>
+          <td>—</td>
+          <td>Acuerdo directo con el cliente</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ TRANSBANK ══ -->
+  <div class="provider-section">
+    <div class="provider-header">
+      <div class="provider-logo" style="background:#E6001A;">TB</div>
+      <div>
+        <h2>Transbank</h2>
+        <span>Fuente: transbankdevelopers.cl · Centro de ayuda Transbank</span>
+      </div>
+    </div>
+    <div class="products-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Webpay Plus</div>
+            <div class="card-sub">Pago único online con tarjeta</div>
+          </div>
+          <span class="card-tag online">Pago online</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Anulación</span>
+            <span class="chip yes">Devolución total</span>
+            <span class="chip yes">Devolución parcial</span>
+          </div>
+          <ul class="note-list">
+            <li>El mismo endpoint de Transbank determina automáticamente si la operación es una reversa o una anulación según el estado del pago.</li>
+            <li>Si el pago aún no fue liquidado, se recomienda la anulación directa.</li>
+            <li>Si ya fue liquidado, se gestiona como devolución. Transbank tarda <strong>mínimo 72 horas hábiles</strong> en procesarla.</li>
+            <li>El comercio tiene un plazo de <strong>90 días desde la fecha de venta</strong> para anular vía servicios web.</li>
+            <li>El tiempo final de acreditación lo define el banco emisor de la tarjeta del cliente.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Oneclick Mall</div>
+            <div class="card-sub">Pago con tarjeta guardada (sin reingreso de datos)</div>
+          </div>
+          <span class="card-tag recurrent">Tarjeta guardada</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Anulación</span>
+            <span class="chip yes">Devolución total</span>
+            <span class="chip yes">Devolución parcial</span>
+          </div>
+          <ul class="note-list">
+            <li>Oneclick <strong>elimina el concepto de reversa automática</strong> de Webpay: el control de la transacción recae completamente en el comercio.</li>
+            <li>Las anulaciones actúan individualmente sobre cada cargo del mall; no afectan otras transacciones agrupadas.</li>
+            <li>El comercio tiene un plazo de <strong>90 días desde la fecha de venta</strong> para anular vía servicios web.</li>
+            <li>Transbank tarda <strong>mínimo 72 horas hábiles</strong> en gatillar la anulación aprobada.</li>
+            <li>El tiempo final de acreditación lo define el banco emisor de la tarjeta del cliente.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ FINTOC ══ -->
+  <div class="provider-section">
+    <div class="provider-header">
+      <div class="provider-logo" style="background:#0EA5E9;">FT</div>
+      <div>
+        <h2>Fintoc</h2>
+        <span>Fuente: fintoc.com/blog · docs.fintoc.com</span>
+      </div>
+    </div>
+    <div class="products-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Transferencias</div>
+            <div class="card-sub">Smart Checkout / pago por transferencia bancaria</div>
+          </div>
+          <span class="card-tag transfer">Transferencia</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Reembolso total</span>
+            <span class="chip yes">Reembolso parcial</span>
+          </div>
+          <ul class="note-list">
+            <li>El reembolso puede solicitarse desde el Dashboard o vía API. Disponible para el esquema <strong>Fintoc Collects</strong> (Fintoc recauda y liquida al comercio).</li>
+            <li>Si la solicitud se hace <strong>antes de las 14:00 de un día hábil</strong>, el dinero llega al cliente el día hábil siguiente antes de las 14:00.</li>
+            <li>Si la solicitud se hace <strong>después de las 14:00</strong>, el reembolso toma <strong>2 días hábiles</strong>.</li>
+            <li>Puedes solicitar el reembolso en cualquier momento: tienes hasta <strong>1 año desde el pago</strong> (cubre los 6 meses de garantía legal).</li>
+            <li>El reembolso se descuenta del saldo pendiente de liquidación. Si el saldo es insuficiente, Fintoc reintenta por <strong>5 días hábiles</strong> antes de expirar.</li>
+            <li>Puedes cancelar un reembolso pendiente hasta las 14:00 del día hábil siguiente a la solicitud.</li>
+            <li class="warn-item">Tiene un costo: <strong>0,014 UF + IVA</strong> por reembolso. Verifica tu plan de facturación.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">PACs</div>
+            <div class="card-sub">Débito directo / pagos recurrentes desde cuenta bancaria</div>
+          </div>
+          <span class="card-tag recurrent">Recurrente</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Reembolso total</span>
+            <span class="chip yes">Reembolso parcial</span>
+          </div>
+          <ul class="note-list">
+            <li>Los PACs son débitos automáticos desde la cuenta bancaria del cliente, previamente autorizados.</li>
+            <li>Los reembolsos siguen la misma lógica que las Transferencias: API de Refunds de Fintoc, mismos plazos de acreditación.</li>
+            <li>Para <strong>cancelar una suscripción PAC</strong> (dejar de cobrar), se debe eliminar el PAC desde la plataforma de Fintoc o desde el banco del cliente. Una vez eliminado, no se pueden generar nuevos cargos.</li>
+            <li>Los reembolsos de cobros ya ejecutados se procesan igual que las transferencias: descuento del saldo de liquidación.</li>
+            <li class="warn-item">Tiene un costo: <strong>0,014 UF + IVA</strong> por reembolso. Verifica tu plan de facturación.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ GETNET ══ -->
+  <div class="provider-section">
+    <div class="provider-header">
+      <div class="provider-logo" style="background:#003087;">GN</div>
+      <div>
+        <h2>Getnet</h2>
+        <span>Fuente: getnet.cl · Preguntas Frecuentes oficiales</span>
+      </div>
+    </div>
+    <div class="products-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Web Checkout</div>
+            <div class="card-sub">Pago único online con tarjeta</div>
+          </div>
+          <span class="card-tag online">Pago online</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Anulación (antes del cierre)</span>
+            <span class="chip yes">Devolución total</span>
+            <span class="chip yes">Devolución parcial</span>
+          </div>
+          <ul class="note-list">
+            <li><strong>Anulación:</strong> solo disponible antes del cierre del terminal, en el mismo equipo donde se hizo la transacción.</li>
+            <li><strong>Devolución:</strong> disponible total o parcialmente, antes o después del cierre, desde cualquier equipo asociado al comercio.</li>
+            <li>La reversa del monto se refleja en los movimientos de la tarjeta del cliente una vez que el banco emisor aprueba y contabiliza la operación.</li>
+            <li>Los comprobantes de pago deben conservarse por al menos <strong>18 meses</strong> desde la fecha de venta (requerido para defender contracargos).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Getnet Click</div>
+            <div class="card-sub">Pagos recurrentes con tarjeta guardada (PAT Getnet)</div>
+          </div>
+          <span class="card-tag recurrent">Recurrente</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Anulación (antes del cierre)</span>
+            <span class="chip yes">Devolución total</span>
+            <span class="chip yes">Devolución parcial</span>
+          </div>
+          <ul class="note-list">
+            <li>Getnet Click utiliza el <strong>PAT Getnet</strong> (Pago Automático con Tarjetas): el cliente autoriza cobros recurrentes sobre su tarjeta.</li>
+            <li>Para cancelar una suscripción recurrente, se puede <strong>modificar, suspender o eliminar</strong> el PAT desde el Portal de Comercios de Getnet.</li>
+            <li>Las devoluciones de cobros ya ejecutados siguen la misma política que Web Checkout: total o parcial, antes o después del cierre.</li>
+            <li>El tiempo de acreditación depende del banco emisor de la tarjeta del cliente.</li>
+            <li class="warn-item">Getnet no publica una política de plazo máximo para devoluciones vía Web Checkout. Consulta directamente con Getnet si tienes dudas sobre casos específicos.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ KLAP ══ -->
+  <div class="provider-section">
+    <div class="provider-header">
+      <div class="provider-logo" style="background:#F59E0B;">KL</div>
+      <div>
+        <h2>Klap</h2>
+        <span>Fuente: klap.cl/developers · Manual Operativo e-commerce</span>
+      </div>
+    </div>
+    <div class="products-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Klap</div>
+            <div class="card-sub">Tarjetas, billeteras y medios digitales</div>
+          </div>
+          <span class="card-tag online">Múltiples medios</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Anulación en línea</span>
+            <span class="chip yes">Anulación administrativa</span>
+            <span class="chip yes">Devolución total</span>
+            <span class="chip yes">Devolución parcial</span>
+          </div>
+          <ul class="note-list">
+            <li><strong>Anulación en línea:</strong> inmediatamente después de la transacción (desde el terminal). Costo: 0,0046 UF + IVA (nacional) / 0,026 UF + IVA (internacional).</li>
+            <li><strong>Anulación administrativa:</strong> días posteriores a la transacción, cuando ya no es posible la anulación en línea.</li>
+            <li>Las devoluciones totales o parciales se pueden gestionar vía <strong>API REST</strong> o plugins para plataformas como WooCommerce, Prestashop, Magento y Jumpseller.</li>
+            <li>Si el cliente desconoce un cobro, el banco inicia un contracargo (chargeback) y el comercio debe aportar documentación de respaldo. Klap gestiona el proceso y comunica la resolución.</li>
+            <li class="warn-item">Klap monitorea el nivel de contracargos por comercio. Niveles excesivos pueden generar consecuencias contractuales.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ KUSHKI ══ -->
+  <div class="provider-section">
+    <div class="provider-header">
+      <div class="provider-logo" style="background:#7C3AED;">KU</div>
+      <div>
+        <h2>Kushki</h2>
+        <span>Fuente: docs.kushki.com/cl · Actualizado febrero 2026</span>
+      </div>
+    </div>
+    <div class="products-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Tarjeta débito y crédito</div>
+            <div class="card-sub">Pagos con tarjeta aprobados</div>
+          </div>
+          <span class="card-tag online">Tarjeta</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip yes">Void (anulación)</span>
+            <span class="chip yes">Refund total</span>
+            <span class="chip yes">Refund parcial</span>
+          </div>
+          <ul class="note-list">
+            <li><strong>Void (anulación en línea):</strong>
+              <ul style="padding-left:14px; margin-top:4px; list-style:disc;">
+                <li style="font-size:12px; color:var(--text-soft);">Modelo agregador/gateway: mismo día y dentro de las <strong>3 horas</strong> posteriores a la aprobación.</li>
+                <li style="font-size:12px; color:var(--text-soft);">Modelo adquiriencia: mismo día antes de las <strong>23:59</strong>.</li>
+              </ul>
+              Si es exitoso, el cargo desaparece del extracto del cliente y se devuelve el monto a su cuenta. Kushki realiza hasta 3 intentos.
+            </li>
+            <li><strong>Refund (reembolso):</strong> aplica cuando ya no es posible el Void. Puede ser total o parcial. Tarda hasta <strong>7 días hábiles</strong> en procesarse y hasta <strong>20 días hábiles</strong> en reflejarse en el extracto del cliente (según banco emisor).</li>
+            <li>En contracargos: Kushki notifica al comercio → el comercio sube documentación de respaldo → Kushki comunica la resolución del banco.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Transferencias y efectivo</div>
+            <div class="card-sub">Otros medios de pago</div>
+          </div>
+          <span class="card-tag transfer">Otros medios</span>
+        </div>
+        <div class="card-body">
+          <div class="ops">
+            <span class="chip no">Sin Void automático</span>
+            <span class="chip warn">Devolución manual</span>
+          </div>
+          <ul class="note-list">
+            <li>Kushki <strong>no soporta devoluciones automáticas</strong> para pagos con transferencia bancaria o efectivo.</li>
+            <li>Las devoluciones deben coordinarse <strong>manualmente entre el comercio y el cliente</strong>.</li>
+            <li class="warn-item">Si tu comercio utiliza estos medios de pago con Kushki, debes tener un proceso interno definido para gestionar las devoluciones.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ LÓGICA DE PLATAFORMA ══ -->
+  <div class="section-title">¿Qué acción puedo hacer según el estado del pago?</div>
+  <div class="flow-wrap">
+    <div class="flow-row header-row">
+      <div class="flow-cell">Estado del pago</div>
+      <div class="flow-cell">Acción disponible en Zafepay</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-cell">Pago reciente, aún no liquidado</div>
+      <div class="flow-cell"><span class="chip yes">Anular</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-cell">Pago liquidado (tarjeta)</div>
+      <div class="flow-cell"><span class="chip yes">Devolver (total o parcial)</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-cell">Pago por transferencia Fintoc</div>
+      <div class="flow-cell"><span class="chip yes">Reembolsar (total o parcial)</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-cell">PAC Fintoc (débito recurrente)</div>
+      <div class="flow-cell"><span class="chip yes">Reembolsar cobro + cancelar suscripción</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-cell">Pago con contracargo activo</div>
+      <div class="flow-cell"><span class="chip no">No disponible hasta resolución del caso</span></div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-cell">Kushki: pago por transferencia o efectivo</div>
+      <div class="flow-cell"><span class="chip warn">Devolución manual (coordinada con el cliente)</span></div>
+    </div>
+  </div>
+
+  <!-- ══ ESTADOS ══ -->
+  <div class="section-title">Estados de una devolución en tu plataforma</div>
+  <div class="states-grid">
+    <div class="state-card s-anular">
+      <div class="label"><span class="state-dot"></span>Disponible para anular</div>
+      <div class="desc">El pago aún no fue liquidado. Puedes cancelarlo sin costo adicional.</div>
+    </div>
+    <div class="state-card s-devolver">
+      <div class="label"><span class="state-dot"></span>Disponible para devolver</div>
+      <div class="desc">El pago fue liquidado. Puedes iniciar una devolución total o parcial.</div>
+    </div>
+    <div class="state-card s-process">
+      <div class="label"><span class="state-dot"></span>Devolución en proceso</div>
+      <div class="desc">La solicitud fue enviada al proveedor. Esperando confirmación.</div>
+    </div>
+    <div class="state-card s-partial">
+      <div class="label"><span class="state-dot"></span>Devuelto parcialmente</div>
+      <div class="desc">Se reembolsó una parte del cobro original.</div>
+    </div>
+    <div class="state-card s-done">
+      <div class="label"><span class="state-dot"></span>Devuelto totalmente</div>
+      <div class="desc">El reembolso completo fue confirmado por el proveedor.</div>
+    </div>
+    <div class="state-card s-rejected">
+      <div class="label"><span class="state-dot"></span>Devolución rechazada</div>
+      <div class="desc">El proveedor no pudo procesar la devolución. Contacta a soporte.</div>
+    </div>
+    <div class="state-card s-charge">
+      <div class="label"><span class="state-dot"></span>En contracargo</div>
+      <div class="desc">El banco del comprador abrió un disputa. Devolución suspendida.</div>
+    </div>
+    <div class="state-card s-charge">
+      <div class="label"><span class="state-dot"></span>Contracargo ganado</div>
+      <div class="desc">El banco resolvió a tu favor. El cobro original se mantiene.</div>
+    </div>
+    <div class="state-card s-rejected">
+      <div class="label"><span class="state-dot"></span>Contracargo perdido</div>
+      <div class="desc">El banco resolvió a favor del comprador. El cobro fue revertido.</div>
+    </div>
+  </div>
+
+  <!-- ══ FAQ ══ -->
+  <div class="section-title">Preguntas frecuentes</div>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q">¿Cuánto tarda en acreditarse el dinero en la cuenta de mi cliente?</div>
+      <div class="faq-a">Depende del medio de pago. Con <strong>tarjetas</strong> (Transbank, Getnet, Klap, Kushki), el plazo lo define el banco emisor: generalmente entre 3 y 10 días hábiles después de que el proveedor procesa la solicitud. Kushki puede tardar hasta 20 días hábiles en reflejarse en el extracto. Con <strong>Fintoc Transferencias o PACs</strong>, el reembolso llega en 1 día hábil si la solicitud es antes de las 14:00, o en 2 días hábiles si es después.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">¿Cuánto tiempo tengo para solicitar una devolución?</div>
+      <div class="faq-a"><strong>Transbank</strong> (Webpay y Oneclick): 90 días desde la fecha de venta. <strong>Fintoc</strong>: hasta 1 año desde el pago, lo que te permite cubrir los 6 meses de garantía legal. <strong>Getnet y Klap</strong>: no especifican un plazo máximo en su documentación pública. <strong>Kushki</strong>: tampoco especifica. Para casos fuera de los plazos conocidos, contacta directamente al proveedor.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">¿Puedo hacer una devolución parcial?</div>
+      <div class="faq-a">Sí, todos los proveedores permiten devoluciones parciales, con excepción de los pagos con transferencia o efectivo en Kushki, que requieren gestión manual.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">¿Qué pasa si mi cliente desconoce un cobro?</div>
+      <div class="faq-a">Si el cliente desconoce una transacción ante su banco, el banco puede iniciar un contracargo (chargeback). El pago queda suspendido y no se puede devolver hasta que el banco emita una resolución. Zafepay te notificará y podrás subir la documentación de respaldo (comprobante de pago, detalle del pedido, etc.) para defender el cobro.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">¿Hay algún costo por hacer una devolución?</div>
+      <div class="faq-a"><strong>Fintoc</strong> cobra 0,014 UF + IVA por cada reembolso. <strong>Klap</strong> cobra 0,0046 UF + IVA por anulaciones totales en transacciones nacionales. El resto de los proveedores no especifica costos adicionales por devolución en su documentación pública, pero pueden aplicar según tu contrato. Zafepay no cobra cargos adicionales por procesar la solicitud desde la plataforma.</div>
+    </div>
+  </div>
+
+  <!-- ══ FUENTES ══ -->
+  <div class="section-title">Fuentes verificadas</div>
+  <div class="sources">
+    <h4>Documentación oficial consultada</h4>
+    <ul>
+      <li><a href="https://www.transbankdevelopers.cl/documentacion/oneclick" target="_blank">Transbank Developers · Oneclick</a></li>
+      <li><a href="https://www.transbankdevelopers.cl/producto/webpay" target="_blank">Transbank Developers · Webpay</a></li>
+      <li><a href="https://publico.transbank.cl/portal-de-clientes/modulos-y-reportes/anulaciones-individuales" target="_blank">Transbank · Anulaciones individuales</a></li>
+      <li><a href="https://fintoc.com/blog/como-hacer-reembolsos-con-fintoc" target="_blank">Fintoc Blog · Cómo hacer reembolsos</a></li>
+      <li><a href="https://fintoc.com/blog/reembolsos-automaticos-con-fintoc" target="_blank">Fintoc Blog · Reembolsos automáticos</a></li>
+      <li><a href="https://docs.fintoc.com/docs/payment-initiation-refunds" target="_blank">Fintoc Docs · API de Refunds</a></li>
+      <li><a href="https://www.getnet.cl/preguntas-frecuentes/clientes-getnet/ventas-y-comprobantes-de-pago/detalles" target="_blank">Getnet · Preguntas frecuentes</a></li>
+      <li><a href="https://www.klap.cl/developers/home" target="_blank">Klap Developers</a></li>
+      <li><a href="https://www.klap.cl/en/home-comercios/otras-tarifas" target="_blank">Klap · Tarifas</a></li>
+      <li><a href="https://docs.kushki.com/cl/card-payments/refunds/manage-voids-and-refunds/" target="_blank">Kushki Docs · Devoluciones y anulaciones (feb. 2026)</a></li>
+    </ul>
+  </div>
+
+  <!-- ══ HELP BANNER ══ -->
+  <div class="help-banner">
+    <div class="help-banner-text">
+      <h3>¿Necesitas ayuda con una devolución?</h3>
+      <p>Nuestro equipo de soporte está disponible para asistirte en cualquier caso.</p>
+    </div>
+    <a class="help-btn" href="mailto:soporte@zafepay.com">Contactar a soporte</a>
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>
